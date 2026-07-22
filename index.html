@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SonicWall Developer &mdash; API Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap" rel="stylesheet">
+<style>
+
+/*
+  Design System Version: UUIF 9.2
+  Source: /mnt/project/Design.MD (Figma sticker sheet 19269:456)
+  Component Tokens Used: --uuif-surface-bg, --uuif-surface-container, --uuif-surface-model,
+    --uuif-surface-tertiary, --uuif-surface-secondary, --uuif-surface-hover, --uuif-surface-selected,
+    --uuif-surface-primary, --uuif-text-primary, --uuif-text-secondary, --uuif-text-tertiary,
+    --uuif-text-contrast, --uuif-text-hover, --uuif-text-highlight, --uuif-text-disabled,
+    --uuif-border-tertiary, --uuif-border-transparent, --uuif-border-secondary, --uuif-border-primary,
+    --uuif-brand-navy, --uuif-brand-orange, --uuif-brand-green, --uuif-brand-red, --uuif-brand-yellow,
+    --uuif-brand-blue, --uuif-theme-text-secondary, --uuif-theme-bg-secondary,
+    --uuif-fill-blue-lightest, --uuif-fill-green-xxx-lighter, --uuif-fill-yellow-xxx-lighter,
+    --uuif-fill-red-lightest, --uuif-radius-4, --uuif-radius-6, --uuif-radius-8, --uuif-radius-12,
+    --uuif-radius-pill, --uuif-shadow-sm, --uuif-shadow-md,
+    --uuif-sp-3, --uuif-sp-4, --uuif-sp-5, --uuif-sp-6, --uuif-sp-7, --uuif-sp-8, --uuif-sp-9, --uuif-sp-10
+*/
+
+:root {
+  /* Text */
+  --uuif-text-primary:     #191c25;
+  --uuif-text-secondary:   #4a618f;
+  --uuif-text-tertiary:    #888888;
+  --uuif-text-contrast:    #ffffff;
+  --uuif-text-disabled:    rgba(17,17,17,0.3);
+  --uuif-text-hover:       #ff5d00;
+  --uuif-text-selected:    #ffffff;
+  --uuif-text-highlight:   #0c2b67;
+
+  /* Surface */
+  --uuif-surface-container: #ffffff;
+  --uuif-surface-bg:        #fafafa;
+  --uuif-surface-primary:   #5b74a7;
+  --uuif-surface-secondary: #d2dff2;
+  --uuif-surface-tertiary:  #f6f8fe;
+  --uuif-surface-highlight: #ff5d00;
+  --uuif-surface-hover:     rgba(17,17,17,0.06);
+  --uuif-surface-selected:  rgba(255,72,26,0.09);
+  --uuif-surface-disabled:  #e8eff9;
+  --uuif-surface-contrast:  #111315;
+  --uuif-surface-model:     #f0f2f5;
+
+  /* Border */
+  --uuif-border-primary:     #ff5d00;
+  --uuif-border-secondary:   #78a3e5;
+  --uuif-border-tertiary:    #cccccc;
+  --uuif-border-transparent: rgba(17,17,17,0.09);
+  --uuif-border-disabled:    #d2dff2;
+  --uuif-border-hover:       #ff5d00;
+  --uuif-border-selected:    #ffffff;
+
+  /* Brand */
+  --uuif-brand-navy:   #001b50;
+  --uuif-brand-blue:   #1f3c73;
+  --uuif-brand-orange: #ff5d00;
+  --uuif-brand-green:  #59a02e;
+  --uuif-brand-red:    #c70f0f;
+  --uuif-brand-yellow: #f3ac3d;
+  --uuif-theme-text-primary:   #001b50;
+  --uuif-theme-text-secondary: #5b74a7;
+  --uuif-theme-bg-primary:     #001b50;
+  --uuif-theme-bg-secondary:   #d2dff2;
+
+  /* Status */
+  --uuif-status-normal: #99CC00;
+  --uuif-status-minor:  #FFCC00;
+  --uuif-status-major:  #FF9900;
+  --uuif-status-high:   #FF0000;
+  --uuif-status-failed: #CC0000;
+
+  /* Fill */
+  --uuif-fill-blue-lightest:      #f6f8fe;
+  --uuif-fill-green-xxx-lighter:  #e3efdc;
+  --uuif-fill-yellow-xxx-lighter: #ffe9be;
+  --uuif-fill-red-lightest:       #fff0f0;
+  --uuif-fill-green-x-darker:     #478234;
+  --uuif-fill-orange-x-darker:    #c24903;
+  --uuif-fill-red-x-darker:       #ab0a0c;
+
+  /* Spacing */
+  --uuif-sp-1: 2px;  --uuif-sp-2: 4px;  --uuif-sp-3: 8px;
+  --uuif-sp-4: 12px; --uuif-sp-5: 16px; --uuif-sp-6: 20px;
+  --uuif-sp-7: 24px; --uuif-sp-8: 32px; --uuif-sp-9: 40px;
+  --uuif-sp-10: 48px; --uuif-sp-12: 64px;
+
+  /* Radius */
+  --uuif-radius-4:   4px;
+  --uuif-radius-6:   6px;
+  --uuif-radius-8:   8px;
+  --uuif-radius-12:  12px;
+  --uuif-radius-22:  22px;
+  --uuif-radius-pill:88px;
+
+  /* Shadow */
+  --uuif-shadow-sm: 0px 1px 6px 2px rgba(0,0,0,0.12);
+  --uuif-shadow-md: 0px 4px 12px 0px rgba(0,0,0,0.16);
+
+  /* Dark surface (hero/nav only — not a UUIF token, used for dark sections) */
+  --dark-bg:     rgba(0,14,46,0.97);
+  --dark-border: rgba(255,255,255,0.10);
+  --dark-text:   rgba(255,255,255,0.60);
+}
+
+/* ── Reset ──────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Nunito Sans', sans-serif;
+  background: var(--uuif-surface-bg);
+  color: var(--uuif-text-primary);
+  font-size: 14px;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+a { color: inherit; text-decoration: none; }
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--uuif-surface-model); }
+::-webkit-scrollbar-thumb { background: var(--uuif-border-secondary); border-radius: var(--uuif-radius-4); }
+
+/* ── Topbar — dark navy (brand) ─────────────────────── */
+.topbar {
+  position: sticky; top: 0; z-index: 200;
+  background: var(--uuif-brand-navy);
+  border-bottom: 1px solid var(--dark-border);
+  height: 58px;
+  display: flex; align-items: center;
+  padding: 0 var(--uuif-sp-9); gap: var(--uuif-sp-7);
+}
+.topbar-logo {
+  font-family: 'Nunito Sans', sans-serif;
+  font-size: 15px; font-weight: 800;
+  letter-spacing: 2.5px; color: var(--uuif-text-contrast);
+  white-space: nowrap; flex-shrink: 0;
+}
+.topbar-logo span { font-weight: 400; }
+.topbar-divider { width: 1px; height: 20px; background: var(--dark-border); flex-shrink: 0; }
+.topbar-product {
+  font-family: 'Nunito Sans', sans-serif;
+  font-size: 11px; font-weight: 600; letter-spacing: 1.5px;
+  color: var(--uuif-brand-orange); text-transform: uppercase;
+}
+.topbar-nav { display: flex; align-items: center; gap: var(--uuif-sp-6); margin-left: auto; }
+.topbar-nav a {
+  font-size: 13px; font-weight: 500;
+  color: rgba(255,255,255,0.65);
+  transition: color 0.15s;
+}
+.topbar-nav a:hover, .topbar-nav a.active { color: var(--uuif-text-contrast); }
+.topbar-search {
+  display: flex; align-items: center; gap: var(--uuif-sp-3);
+  background: rgba(255,255,255,0.07);
+  border: 1px solid var(--dark-border);
+  border-radius: var(--uuif-radius-6);
+  padding: 7px 14px;
+  font-size: 13px; color: rgba(255,255,255,0.40);
+  cursor: pointer; transition: border-color 0.15s;
+  font-family: 'Nunito Sans', sans-serif;
+}
+.topbar-search:hover { border-color: rgba(255,255,255,0.25); }
+.topbar-kbd {
+  font-family: 'Nunito Sans', sans-serif;
+  font-size: 10px;
+  background: rgba(255,255,255,0.08);
+  padding: 2px 6px; border-radius: var(--uuif-radius-4);
+  color: rgba(255,255,255,0.30);
+}
+/* Buttons: always pill-shaped per UUIF 9.2 rule 5 */
+.uuif-btn {
+  font-family: 'Nunito Sans', sans-serif;
+  font-size: 13px; font-weight: 600;
+  border-radius: var(--uuif-radius-pill);
+  padding: 5.5px 20px;
+  cursor: pointer; border: none;
+  transition: all 0.15s; white-space: nowrap;
+}
+.uuif-btn-primary {
+  background: var(--uuif-surface-primary);
+  color: var(--uuif-text-contrast);
+}
+.uuif-btn-primary:hover { background: var(--uuif-brand-orange); }
+.uuif-btn-orange {
+  background: var(--uuif-brand-orange);
+  color: var(--uuif-text-contrast);
+  box-shadow: 0 3px 12px rgba(255,93,0,0.25);
+}
+.uuif-btn-orange:hover { background: var(--uuif-fill-orange-x-darker); }
+.uuif-btn-secondary {
+  background: var(--uuif-surface-container);
+  color: var(--uuif-text-secondary);
+  border: 1px solid var(--uuif-border-secondary);
+}
+.uuif-btn-secondary:hover {
+  border-color: var(--uuif-border-hover);
+  color: var(--uuif-text-hover);
+}
+.uuif-btn-ghost {
+  background: transparent;
+  color: var(--uuif-text-contrast);
+  border: 1px solid rgba(255,255,255,0.25);
+}
+.uuif-btn-ghost:hover { border-color: rgba(255,255,255,0.55); }
+
+/* ── Hero — dark navy ───────────────────────────────── */
+.hero {
+  background: var(--uuif-brand-navy);
+  position: relative; overflow: hidden;
+  padding: var(--uuif-sp-12) var(--uuif-sp-9) 72px;
+}
+.hero-glow {
+  position: absolute; top: -80px; right: -60px;
+  width: 500px; height: 500px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,93,0,0.06) 0%, transparent 65%);
+  pointer-events: none;
+}
+.hero-grid {
+  position: absolute; inset: 0; opacity: 0.025;
+  background-image: linear-gradient(rgba(255,255,255,1) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(255,255,255,1) 1px, transparent 1px);
+  background-size: 48px 48px; pointer-events: none;
+}
+.hero-inner {
+  position: relative; max-width: 1140px; margin: 0 auto;
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: var(--uuif-sp-12); align-items: center;
+}
+.hero-eyebrow {
+  font-family: 'Nunito Sans', sans-serif;
+  font-size: 11px; font-weight: 600; letter-spacing: 2px;
+  color: var(--uuif-brand-orange); text-transform: uppercase;
+  margin-bottom: var(--uuif-sp-5);
+  display: flex; align-items: center; gap: var(--uuif-sp-3);
+}
+.hero-eyebrow::before { content: ''; width: 20px; height: 2px; background: var(--uuif-brand-orange); }
+.hero h1 {
+  font-family: 'Nunito Sans', sans-serif;
+  font-size: clamp(32px, 4vw, 48px);
+  font-weight: 800; line-height: 1.1;
+  letter-spacing: -0.02em; color: var(--uuif-text-contrast);
+  margin-bottom: var(--uuif-sp-5);
+}
+.hero h1 em {
+  font-style: normal; color: var(--uuif-brand-orange);
+}
+.hero-desc {
+  font-size: 15px; color: var(--dark-text);
+  line-height: 1.7; max-width: 440px; margin-bottom: var(--uuif-sp-7);
+}
+.hero-actions { display: flex; gap: var(--uuif-sp-4); flex-wrap: wrap; }
+.hero-stats {
+  display: flex; gap: var(--uuif-sp-7); margin-top: var(--uuif-sp-8);
+  padding-top: var(--uuif-sp-7);
+  border-top: 1px solid var(--dark-border);
+}
+.hero-stat-num {
+  font-family: 'Nunito Sans', sans-serif;
+  font-size: 24px; font-weight: 800; color: var(--uuif-text-contrast);
+}
+.hero-stat-label { font-size: 12px; color: var(--dark-text); margin-top: 2px; }
+
+/* Code panel */
+.uuif-code-panel {
+  background: rgba(0,0,0,0.5);
+  border: 1px solid var(--dark-border);
+  border-radius: var(--uuif-radius-8); overflow: hidden;
+  box-shadow: var(--uuif-shadow-md);
+}
+.uuif-code-bar {
+  background: rgba(255,255,255,0.05);
+  border-bottom: 1px solid var(--dark-border);
+  padding: var(--uuif-sp-4) var(--uuif-sp-5);
+  display: flex; align-items: center; gap: 7px;
+}
+.code-dot { width: 10px; height: 10px; border-radius: 50%; }
+.uuif-code-title { font-family: 'Nunito Sans', sans-serif; font-size: 12px; color: rgba(255,255,255,0.3); margin-left: var(--uuif-sp-3); }
+.uuif-code-body { padding: var(--uuif-sp-6) var(--uuif-sp-6); font-family: 'Nunito Sans', sans-serif; font-size: 12.5px; line-height: 1.9; }
+.c-comment { color: rgba(255,255,255,0.28); }
+.c-kw  { color: #FF9A56; }
+.c-str { color: #8AEBBD; }
+.c-fn  { color: #79BBFF; }
+.c-num { color: var(--uuif-brand-orange); }
+.c-dim { color: rgba(255,255,255,0.45); }
+
+/* ── Stats bar — light ──────────────────────────────── */
+.stats-bar {
+  background: var(--uuif-surface-container);
+  border-bottom: 1px solid var(--uuif-border-transparent);
+  padding: var(--uuif-sp-6) var(--uuif-sp-9);
+  box-shadow: var(--uuif-shadow-sm);
+}
+.stats-bar-inner { max-width: 1140px; margin: 0 auto; display: flex; }
+.stat-item {
+  flex: 1; text-align: center; padding: 0 var(--uuif-sp-5);
+  border-right: 1px solid var(--uuif-border-transparent);
+}
+.stat-item:last-child { border-right: none; }
+.stat-num {
+  font-family: 'Nunito Sans', sans-serif;
+  font-size: 20px; font-weight: 800; color: var(--uuif-brand-orange);
+}
+.stat-label { font-size: 12px; color: var(--uuif-text-tertiary); margin-top: 2px; }
+
+/* ── Main — light ───────────────────────────────────── */
+.main { max-width: 1140px; margin: 0 auto; padding: var(--uuif-sp-12) var(--uuif-sp-9); }
+.section-head { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: var(--uuif-sp-7); }
+.section-eyebrow {
+  font-family: 'Nunito Sans', sans-serif;
+  font-size: 11px; font-weight: 700; letter-spacing: 2px;
+  text-transform: uppercase; color: var(--uuif-brand-orange);
+  margin-bottom: var(--uuif-sp-2);
+}
+/* Card/modal title: 14-16px bold UPPERCASE per typography hierarchy */
+.section-title {
+  font-family: 'Nunito Sans', sans-serif;
+  font-size: 16px; font-weight: 700;
+  letter-spacing: 0; color: var(--uuif-text-highlight);
+  text-transform: uppercase;
+}
+.section-link {
+  font-size: 13px; font-weight: 600; color: var(--uuif-brand-orange);
+  transition: opacity 0.15s; white-space: nowrap;
+}
+.section-link:hover { opacity: 0.7; }
+.section-divider { height: 1px; background: var(--uuif-border-transparent); max-width: 1140px; margin: var(--uuif-sp-12) auto; }
+
+/* ── Dashboard Card (UUIF 9.2 spec) ────────────────── */
+/* Background: --uuif-surface-container, Border: --uuif-border-tertiary, Radius: --uuif-radius-6 */
+/* Header: --uuif-surface-model bg, --uuif-border-transparent bottom, title 14px bold --uuif-text-highlight UPPERCASE */
+.uuif-card {
+  background: var(--uuif-surface-container);
+  border: 1px solid var(--uuif-border-tertiary);
+  border-radius: var(--uuif-radius-6);
+  overflow: hidden;
+  transition: box-shadow 0.2s, border-color 0.2s;
+  box-shadow: var(--uuif-shadow-sm);
+  position: relative;
+}
+.uuif-card:hover {
+  box-shadow: var(--uuif-shadow-md);
+  border-color: var(--uuif-border-secondary);
+}
+.uuif-card-header {
+  background: var(--uuif-surface-model);
+  border-bottom: 1px solid var(--uuif-border-transparent);
+  padding: var(--uuif-sp-4) var(--uuif-sp-5);
+  display: flex; justify-content: space-between; align-items: center;
+}
+.uuif-card-title {
+  font-size: 14px; font-weight: 700;
+  color: var(--uuif-text-highlight); text-transform: uppercase;
+}
+.uuif-card-body { padding: var(--uuif-sp-5); }
+
+/* API catalog specific */
+.api-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: var(--uuif-sp-5); }
+.api-card-icon {
+  width: 38px; height: 38px; border-radius: var(--uuif-radius-6);
+  background: var(--uuif-surface-tertiary);
+  border: 1px solid var(--uuif-border-secondary);
+  display: flex; align-items: center; justify-content: center; font-size: 18px;
+}
+.api-card-desc { font-size: 13px; color: var(--uuif-text-secondary); line-height: 1.5; margin-bottom: var(--uuif-sp-5); }
+.api-card-meta { display: flex; gap: var(--uuif-sp-4); flex-wrap: wrap; }
+.api-meta-item { font-family: 'Nunito Sans', sans-serif; font-size: 11px; font-weight: 600; color: var(--uuif-text-tertiary); display: flex; align-items: center; gap: 4px; }
+.dot { width: 5px; height: 5px; border-radius: 50%; }
+.dot-green { background: var(--uuif-brand-green); }
+.dot-yellow { background: var(--uuif-brand-yellow); }
+.dot-orange { background: var(--uuif-brand-orange); }
+
+/* Chip/badge per UUIF 9.2: height 22px, radius-4, padding 2px 7px */
+.uuif-chip {
+  font-family: 'Nunito Sans', sans-serif;
+  font-size: 10px; font-weight: 700;
+  height: 22px; border-radius: var(--uuif-radius-4);
+  padding: 2px 7px; display: inline-flex; align-items: center;
+  text-transform: uppercase; letter-spacing: 0.5px;
+}
+.uuif-chip-default  { background: var(--uuif-surface-tertiary); border: 1px solid var(--uuif-border-secondary); color: var(--uuif-text-secondary); }
+.uuif-chip-success  { background: var(--uuif-fill-green-xxx-lighter); border: 1px solid var(--uuif-brand-green); color: var(--uuif-brand-green); }
+.uuif-chip-warning  { background: var(--uuif-fill-yellow-xxx-lighter); border: 1px solid var(--uuif-brand-yellow); color: var(--uuif-brand-yellow); }
+.uuif-chip-error    { background: var(--uuif-fill-red-lightest); border: 1px solid var(--uuif-brand-red); color: var(--uuif-brand-red); }
+.uuif-chip-orange   { background: var(--uuif-surface-selected); border: 1px solid var(--uuif-brand-orange); color: var(--uuif-brand-orange); }
+
+/* Filter chips */
+.catalog-filters { display: flex; gap: var(--uuif-sp-3); flex-wrap: wrap; margin-bottom: var(--uuif-sp-6); }
+.uuif-filter-chip {
+  font-family: 'Nunito Sans', sans-serif;
+  font-size: 12px; font-weight: 600;
+  padding: 5px 14px; border-radius: var(--uuif-radius-pill);
+  border: 1px solid var(--uuif-border-tertiary);
+  background: var(--uuif-surface-container);
+  color: var(--uuif-text-secondary); cursor: pointer; transition: all 0.15s;
+}
+.uuif-filter-chip:hover { border-color: var(--uuif-border-hover); color: var(--uuif-text-hover); }
+.uuif-filter-chip.active { border-color: var(--uuif-border-primary); color: var(--uuif-text-hover); background: var(--uuif-surface-selected); }
+
+/* ── Getting Started ────────────────────────────────── */
+.gs-wrap {
+  background: var(--uuif-surface-container);
+  border: 1px solid var(--uuif-border-tertiary);
+  border-radius: var(--uuif-radius-8);
+  overflow: hidden;
+  box-shadow: var(--uuif-shadow-sm);
+}
+/* Tab bar per UUIF 9.2: container --uuif-surface-container, --uuif-border-primary bottom */
+.gs-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--uuif-border-primary);
+  background: var(--uuif-surface-container);
+  padding: 0 var(--uuif-sp-5);
+}
+.gs-tab {
+  font-size: 14px; font-weight: 400;
+  padding: 10px var(--uuif-sp-5); height: 40px;
+  color: var(--uuif-theme-text-secondary); cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.15s; position: relative; top: 1px;
+}
+.gs-tab.active {
+  font-weight: 700; color: var(--uuif-text-hover);
+  border-bottom-color: var(--uuif-border-primary);
+}
+.gs-body { display: flex; min-height: 300px; }
+.gs-steps { flex: 1; padding: var(--uuif-sp-8) var(--uuif-sp-8); border-right: 1px solid var(--uuif-border-transparent); }
+.gs-step { display: flex; gap: var(--uuif-sp-5); margin-bottom: var(--uuif-sp-6); }
+.gs-step:last-child { margin-bottom: 0; }
+/* Wizard step: done = --uuif-brand-green, active = --uuif-surface-primary */
+.gs-step-num {
+  width: 28px; height: 28px; border-radius: var(--uuif-radius-8);
+  background: var(--uuif-surface-primary); color: var(--uuif-text-contrast);
+  font-size: 13px; font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; margin-top: 1px;
+}
+.gs-step-num.done { background: var(--uuif-brand-green); }
+.gs-step-title { font-size: 14px; font-weight: 700; color: var(--uuif-text-primary); margin-bottom: 3px; }
+.gs-step-desc { font-size: 13px; color: var(--uuif-text-secondary); line-height: 1.5; }
+.gs-step-link { display: inline-block; margin-top: 5px; font-size: 12px; font-weight: 600; color: var(--uuif-brand-orange); }
+.gs-code-panel { width: 340px; flex-shrink: 0; background: var(--uuif-brand-navy); padding: var(--uuif-sp-7); }
+.gs-code-label {
+  font-family: 'Nunito Sans', sans-serif;
+  font-size: 10px; font-weight: 700; letter-spacing: 1.5px;
+  color: rgba(255,255,255,0.3); text-transform: uppercase; margin-bottom: var(--uuif-sp-4);
+}
+.uuif-code-block {
+  background: rgba(0,0,0,0.4);
+  border: 1px solid var(--dark-border);
+  border-radius: var(--uuif-radius-6); padding: var(--uuif-sp-5);
+  font-family: 'Nunito Sans', sans-serif;
+  font-size: 12px; line-height: 1.8; overflow-x: auto; color: #E2E8F0;
+}
+
+/* ── Reference panel ────────────────────────────────── */
+.ref-wrap {
+  background: var(--uuif-surface-container);
+  border: 1px solid var(--uuif-border-tertiary);
+  border-radius: var(--uuif-radius-8); overflow: hidden;
+  display: flex; min-height: 520px;
+  box-shadow: var(--uuif-shadow-sm);
+}
+.ref-sidebar {
+  width: 220px; flex-shrink: 0;
+  border-right: 1px solid var(--uuif-border-transparent);
+  background: var(--uuif-surface-model); overflow-y: auto;
+}
+.ref-sidebar-header { padding: var(--uuif-sp-4); border-bottom: 1px solid var(--uuif-border-transparent); }
+.uuif-search-input {
+  background: var(--uuif-surface-container);
+  border: 1px solid var(--uuif-border-tertiary);
+  border-radius: var(--uuif-radius-6); padding: 7px 12px;
+  font-size: 12px; color: var(--uuif-text-tertiary);
+  width: 100%; display: flex; align-items: center; gap: var(--uuif-sp-2);
+  font-family: 'Nunito Sans', sans-serif;
+}
+.ref-group { padding: 4px 0; }
+.ref-group-title {
+  font-family: 'Nunito Sans', sans-serif;
+  font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+  color: var(--uuif-text-tertiary); padding: var(--uuif-sp-3) var(--uuif-sp-5) 4px;
+}
+.ref-item {
+  display: flex; align-items: center; gap: var(--uuif-sp-3);
+  padding: 7px var(--uuif-sp-5); cursor: pointer; transition: background 0.1s; font-size: 12px;
+}
+.ref-item:hover { background: var(--uuif-surface-hover); }
+.ref-item.active { background: var(--uuif-surface-selected); }
+.ref-method {
+  font-family: 'Nunito Sans', sans-serif;
+  font-size: 9.5px; font-weight: 700;
+  padding: 2px 5px; border-radius: var(--uuif-radius-4);
+  text-transform: uppercase; min-width: 36px; text-align: center; flex-shrink: 0;
+}
+.m-get  { background: var(--uuif-fill-green-xxx-lighter); color: var(--uuif-brand-green); }
+.m-post { background: var(--uuif-surface-selected); color: var(--uuif-brand-orange); }
+.m-put  { background: var(--uuif-fill-yellow-xxx-lighter); color: var(--uuif-brand-yellow); }
+.m-del  { background: var(--uuif-fill-red-lightest); color: var(--uuif-brand-red); }
+.ref-label { color: var(--uuif-text-secondary); font-size: 12px; }
+.ref-main { flex: 1; padding: var(--uuif-sp-8); overflow-y: auto; }
+.ref-ep-header { display: flex; align-items: center; gap: var(--uuif-sp-4); margin-bottom: var(--uuif-sp-5); }
+.ref-ep-path { font-family: 'Nunito Sans', sans-serif; font-size: 14px; color: var(--uuif-text-primary); font-weight: 600; }
+.ref-ep-path em { font-style: normal; color: var(--uuif-brand-orange); }
+.ref-desc { font-size: 14px; color: var(--uuif-text-secondary); line-height: 1.6; margin-bottom: var(--uuif-sp-6); }
+.ref-label-sm {
+  font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px;
+  color: var(--uuif-text-tertiary); margin-bottom: var(--uuif-sp-3);
+}
+/* Data table per UUIF 9.2: header --uuif-surface-model, --uuif-border-primary bottom */
+.uuif-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: var(--uuif-sp-6); }
+.uuif-table th {
+  font-family: 'Nunito Sans', sans-serif; font-size: 11px; font-weight: 700;
+  letter-spacing: 0.07em; text-transform: uppercase;
+  color: var(--uuif-text-secondary); text-align: left;
+  padding: var(--uuif-sp-3) var(--uuif-sp-4);
+  background: var(--uuif-surface-model);
+  border-bottom: 1px solid var(--uuif-border-primary);
+}
+.uuif-table td {
+  padding: 10px var(--uuif-sp-4);
+  border-bottom: 1px solid var(--uuif-border-transparent);
+  vertical-align: top; color: var(--uuif-text-primary);
+}
+.p-name { font-family: 'Nunito Sans', sans-serif; font-weight: 600; font-size: 12.5px; color: var(--uuif-text-primary); }
+.p-type { font-family: 'Nunito Sans', sans-serif; font-size: 12px; color: var(--uuif-surface-primary); }
+.p-req  { font-size: 11px; color: var(--uuif-brand-orange); font-weight: 700; }
+.p-opt  { font-size: 11px; color: var(--uuif-text-disabled); }
+.p-desc { font-size: 13px; color: var(--uuif-text-secondary); }
+.p-desc code {
+  font-family: 'Nunito Sans', sans-serif; font-size: 11.5px;
+  background: var(--uuif-surface-tertiary); padding: 1px 5px;
+  border-radius: var(--uuif-radius-4); color: var(--uuif-theme-text-secondary);
+}
+/* Tab bar */
+.snippet-tabs {
+  display: flex; border-bottom: 1px solid var(--uuif-border-primary);
+  background: var(--uuif-surface-container); padding: 0 4px;
+}
+.snippet-tab {
+  font-family: 'Nunito Sans', sans-serif; font-size: 12px; font-weight: 400;
+  padding: 8px 14px; color: var(--uuif-text-secondary); cursor: pointer;
+  border-bottom: 2px solid transparent; transition: all 0.15s; height: 40px;
+}
+.snippet-tab.active { font-weight: 700; color: var(--uuif-text-hover); border-bottom-color: var(--uuif-border-primary); }
+.snippet-code {
+  background: var(--uuif-brand-navy);
+  border-radius: 0 0 var(--uuif-radius-6) var(--uuif-radius-6);
+  padding: var(--uuif-sp-5);
+  font-family: 'Nunito Sans', sans-serif; font-size: 12px; line-height: 1.8;
+  overflow-x: auto; color: #E2E8F0;
+}
+
+/* ── Changelog — light ──────────────────────────────── */
+.cl-list { display: flex; flex-direction: column; gap: var(--uuif-sp-4); }
+.cl-entry {
+  background: var(--uuif-surface-container);
+  border: 1px solid var(--uuif-border-tertiary);
+  border-radius: var(--uuif-radius-6); padding: var(--uuif-sp-5) var(--uuif-sp-6);
+  display: flex; gap: var(--uuif-sp-6); align-items: flex-start;
+  box-shadow: var(--uuif-shadow-sm); transition: box-shadow 0.15s;
+}
+.cl-entry:hover { box-shadow: var(--uuif-shadow-md); }
+/* Breaking: error fill + red left border */
+.cl-entry.breaking {
+  border-left: 3px solid var(--uuif-brand-red);
+  background: var(--uuif-fill-red-lightest);
+}
+.cl-meta { flex-shrink: 0; min-width: 120px; }
+.cl-date { font-family: 'Nunito Sans', sans-serif; font-size: 11.5px; font-weight: 600; color: var(--uuif-text-tertiary); margin-bottom: 5px; }
+.cl-product {
+  font-family: 'Nunito Sans', sans-serif; font-size: 10px; font-weight: 700;
+  letter-spacing: 1.5px; text-transform: uppercase;
+  color: var(--uuif-brand-orange); margin-bottom: var(--uuif-sp-2);
+}
+.cl-title { font-size: 14px; font-weight: 700; color: var(--uuif-text-primary); margin-bottom: 5px; }
+.cl-desc { font-size: 13px; color: var(--uuif-text-secondary); line-height: 1.55; }
+.cl-desc code {
+  font-family: 'Nunito Sans', sans-serif; font-size: 11.5px;
+  background: var(--uuif-surface-model); padding: 1px 5px;
+  border-radius: var(--uuif-radius-4); color: var(--uuif-theme-text-secondary);
+}
+
+/* Status info banner pairings (UUIF 9.2 Section 14) */
+.uuif-banner-info    { background: var(--uuif-fill-blue-lightest); border: 1px solid var(--uuif-border-secondary); border-radius: var(--uuif-radius-6); padding: var(--uuif-sp-4) var(--uuif-sp-5); }
+.uuif-banner-warning { background: var(--uuif-fill-yellow-xxx-lighter); border: 1px solid var(--uuif-brand-yellow); border-radius: var(--uuif-radius-6); padding: var(--uuif-sp-4) var(--uuif-sp-5); }
+.uuif-banner-success { background: var(--uuif-fill-green-xxx-lighter); border: 1px solid var(--uuif-brand-green); border-radius: var(--uuif-radius-6); padding: var(--uuif-sp-4) var(--uuif-sp-5); }
+
+/* ── Footer — dark navy ─────────────────────────────── */
+.footer { background: var(--uuif-brand-navy); color: var(--dark-text); padding: var(--uuif-sp-12) var(--uuif-sp-9) var(--uuif-sp-8); margin-top: var(--uuif-sp-12); }
+.footer-inner { max-width: 1140px; margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: var(--uuif-sp-12); margin-bottom: var(--uuif-sp-8); }
+.footer-logo { font-family: 'Nunito Sans', sans-serif; font-size: 15px; font-weight: 800; letter-spacing: 2.5px; color: var(--uuif-text-contrast); margin-bottom: var(--uuif-sp-4); }
+.footer-logo span { font-weight: 400; }
+.footer-desc { font-size: 13px; line-height: 1.6; max-width: 220px; margin-bottom: var(--uuif-sp-5); }
+.footer-status { display: flex; align-items: center; gap: var(--uuif-sp-3); font-family: 'Nunito Sans', sans-serif; font-size: 11px; color: var(--uuif-brand-green); }
+.status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--uuif-brand-green); animation: pulse 2s ease-in-out infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+.footer-col-title { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(255,255,255,0.35); margin-bottom: var(--uuif-sp-4); }
+.footer-col ul { list-style: none; display: flex; flex-direction: column; gap: var(--uuif-sp-3); }
+.footer-col ul li a { font-size: 13px; color: var(--dark-text); transition: color 0.15s; }
+.footer-col ul li a:hover { color: var(--uuif-text-contrast); }
+.footer-bottom { max-width: 1140px; margin: 0 auto; padding-top: var(--uuif-sp-6); border-top: 1px solid var(--dark-border); display: flex; justify-content: space-between; align-items: center; }
+.footer-copy { font-size: 12px; color: var(--dark-text); }
+.footer-links { display: flex; gap: var(--uuif-sp-6); }
+.footer-links a { font-size: 12px; color: var(--dark-text); transition: color 0.15s; }
+.footer-links a:hover { color: var(--uuif-text-contrast); }
+
+/* ── Animations ─────────────────────────────────────── */
+@keyframes fadeInUp { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+.anim { animation: fadeInUp 0.45s ease both; }
+.d1 { animation-delay: 0.05s; }
+.d2 { animation-delay: 0.12s; }
+.d3 { animation-delay: 0.20s; }
+
+
+</style>
+</head>
+<body><nav class="topbar">
+  <div class="topbar-logo">SONIC<span>WALL</span><sup style="font-size:8px">&reg;</sup></div>
+  <div class="topbar-divider"></div>
+  <div class="topbar-product">Developer Hub</div>
+  <nav class="topbar-nav">
+    <a href="#catalog" class="active">APIs</a>
+    <a href="#start">Quick Start</a>
+    <a href="#reference">Reference</a>
+    <a href="#changelog">Changelog</a>
+    <a href="#">SDKs</a>
+    <a href="#">Community</a>
+  </nav>
+  <div class="topbar-search" style="margin-left:auto">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    Search APIs&hellip;
+    <span class="topbar-kbd">&#8984;K</span>
+  </div>
+  <button class="uuif-btn uuif-btn-orange" style="margin-left:12px">Get API Key</button>
+</nav><section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-inner">
+    <div class="anim d1">
+      <div class="hero-eyebrow">developer.sonicwall.com/apis</div>
+      <h1>One hub.<br>Every SonicWall <em>API.</em></h1>
+      <p class="hero-desc">Unified access to all SonicWall product APIs &mdash; interactive reference docs, self-service credentials from platform.sonicwall.com, and auto-generated code samples in 5 languages.</p>
+      <div class="hero-actions">
+        <button class="uuif-btn uuif-btn-orange">Get Your API Key &rarr;</button>
+        <button class="uuif-btn uuif-btn-ghost">Browse the Catalog</button>
+      </div>
+      <div class="hero-stats">
+        <div><div class="hero-stat-num">9</div><div class="hero-stat-label">API surfaces</div></div>
+        <div><div class="hero-stat-num">500+</div><div class="hero-stat-label">Endpoints</div></div>
+        <div><div class="hero-stat-num">5</div><div class="hero-stat-label">Code languages</div></div>
+        <div><div class="hero-stat-num">OAS&nbsp;3.1</div><div class="hero-stat-label">Spec standard</div></div>
+      </div>
+    </div>
+    <div class="anim d2">
+      <div class="uuif-code-panel">
+        <div class="uuif-code-bar">
+          <div class="code-dot" style="background:#FF5F57"></div>
+          <div class="code-dot" style="background:#FEBC2E"></div>
+          <div class="code-dot" style="background:#28C840"></div>
+          <span class="uuif-code-title">nsm_devices.py</span>
+        </div>
+        <div class="uuif-code-body"><span class="c-comment"># Authenticate once &mdash; manage everything</span>
+<span class="c-kw">import</span> requests
+
+BASE  <span class="c-dim">=</span> <span class="c-str">"https://api.sonicwall.com/nsm/v1"</span>
+TOKEN <span class="c-dim">=</span> <span class="c-str">"sw_live_&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;"</span>
+
+r <span class="c-dim">=</span> requests<span class="c-dim">.</span><span class="c-fn">get</span><span class="c-dim">(f"</span><span class="c-str">{BASE}</span><span class="c-dim">/devices", headers={</span>
+  <span class="c-str">"Authorization"</span><span class="c-dim">: f"Bearer </span><span class="c-num">{TOKEN}</span><span class="c-dim">"})</span>
+<span class="c-fn">print</span><span class="c-dim">(</span>r<span class="c-dim">.</span><span class="c-fn">json</span><span class="c-dim">())</span>
+<span class="c-comment"># {"devices":[...], "total": 103}</span></div>
+      </div>
+    </div>
+  </div>
+</section><div class="stats-bar">
+  <div class="stats-bar-inner">
+    <div class="stat-item"><div class="stat-num">NSM</div><div class="stat-label">68 endpoints &middot; OAS 3.1</div></div>
+    <div class="stat-item"><div class="stat-num">SonicOS</div><div class="stat-label">347 endpoints &middot; Gen 6 + 7</div></div>
+    <div class="stat-item"><div class="stat-num">CSE</div><div class="stat-label">Zero Trust Access API</div></div>
+    <div class="stat-item"><div class="stat-num">Capture Client</div><div class="stat-label">EDR &middot; NOAM + EU</div></div>
+    <div class="stat-item"><div class="stat-num">MySonicWall</div><div class="stat-label">Tenant &amp; license mgmt</div></div>
+    <div class="stat-item"><div class="stat-num">+4 more</div><div class="stat-label">WNM &middot; CMC &middot; SMA &middot; Email</div></div>
+  </div>
+</div>
+<div class="main">
+<section id="catalog">
+  <div class="section-head anim d1">
+    <div><div class="section-eyebrow">API Catalog</div><div class="section-title">All SonicWall APIs &mdash; one place</div></div>
+    <a href="#" class="section-link">View full catalog &rarr;</a>
+  </div>
+  <div class="catalog-filters anim d2">
+    <div class="uuif-filter-chip active">All Products</div>
+    <div class="uuif-filter-chip">Firewall</div>
+    <div class="uuif-filter-chip">Endpoint</div>
+    <div class="uuif-filter-chip">Zero Trust</div>
+    <div class="uuif-filter-chip">Management</div>
+  </div>
+  <div class="api-grid anim d3"><div class="uuif-card">
+  <div class="uuif-card-header">
+    <div style="display:flex;align-items:center;gap:var(--uuif-sp-3)">
+      <div class="api-card-icon">&#x1F6E1;</div>
+      <span class="uuif-card-title">NSM API</span>
+    </div>
+    <span class="uuif-chip uuif-chip-success">GA</span>
+  </div>
+  <div class="uuif-card-body">
+    <div class="api-card-desc">Network Security Manager &mdash; firewall policy management, tenant operations, and device lifecycle across your fleet.</div>
+    <div class="api-card-meta"><div class="api-meta-item"><div class="dot dot-green"></div>68 endpoints</div><div class="api-meta-item"><div class="dot "></div>OAS 3.1</div><div class="api-meta-item"><div class="dot "></div>v2.0</div></div>
+  </div>
+</div>
+<div class="uuif-card">
+  <div class="uuif-card-header">
+    <div style="display:flex;align-items:center;gap:var(--uuif-sp-3)">
+      <div class="api-card-icon">&#x1F525;</div>
+      <span class="uuif-card-title">SonicOS API</span>
+    </div>
+    <span class="uuif-chip uuif-chip-success">GA</span>
+  </div>
+  <div class="uuif-card-body">
+    <div class="api-card-desc">Direct device-level control &mdash; address objects, firewall rules, VPN config, and real-time diagnostics for Gen 6 &amp; Gen 7.</div>
+    <div class="api-card-meta"><div class="api-meta-item"><div class="dot dot-green"></div>347 endpoints</div><div class="api-meta-item"><div class="dot "></div>OAS 3.1</div><div class="api-meta-item"><div class="dot "></div>7.1</div></div>
+  </div>
+</div>
+<div class="uuif-card">
+  <div class="uuif-card-header">
+    <div style="display:flex;align-items:center;gap:var(--uuif-sp-3)">
+      <div class="api-card-icon">&#x2601;</div>
+      <span class="uuif-card-title">Cloud Secure Edge</span>
+    </div>
+    <span class="uuif-chip uuif-chip-success">GA</span>
+  </div>
+  <div class="uuif-card-body">
+    <div class="api-card-desc">Zero Trust Network Access &mdash; manage users, devices, and policies for your hybrid workforce via REST or Terraform.</div>
+    <div class="api-card-meta"><div class="api-meta-item"><div class="dot dot-green"></div>CSE v2</div><div class="api-meta-item"><div class="dot "></div>Terraform SDK</div><div class="api-meta-item"><div class="dot "></div>Python SDK</div></div>
+  </div>
+</div>
+<div class="uuif-card">
+  <div class="uuif-card-header">
+    <div style="display:flex;align-items:center;gap:var(--uuif-sp-3)">
+      <div class="api-card-icon">&#x1F5A5;</div>
+      <span class="uuif-card-title">Capture Client</span>
+    </div>
+    <span class="uuif-chip uuif-chip-success">GA</span>
+  </div>
+  <div class="uuif-card-body">
+    <div class="api-card-desc">Endpoint Detection &amp; Response &mdash; automate threat hunting, policy enforcement, and posture checks across NOAM and EU.</div>
+    <div class="api-card-meta"><div class="api-meta-item"><div class="dot dot-green"></div>27 categories</div><div class="api-meta-item"><div class="dot "></div>CC + CCMDR</div><div class="api-meta-item"><div class="dot "></div>NOAM &middot; EU</div></div>
+  </div>
+</div>
+<div class="uuif-card">
+  <div class="uuif-card-header">
+    <div style="display:flex;align-items:center;gap:var(--uuif-sp-3)">
+      <div class="api-card-icon">&#x1F511;</div>
+      <span class="uuif-card-title">MySonicWall API</span>
+    </div>
+    <span class="uuif-chip uuif-chip-success">GA</span>
+  </div>
+  <div class="uuif-card-body">
+    <div class="api-card-desc">Tenant and license management &mdash; register products, manage subscriptions, and automate MSP workflows across all tenants.</div>
+    <div class="api-card-meta"><div class="api-meta-item"><div class="dot dot-green"></div>6 categories</div><div class="api-meta-item"><div class="dot "></div>OAS 3.1</div><div class="api-meta-item"><div class="dot "></div>MSP-ready</div></div>
+  </div>
+</div>
+<div class="uuif-card">
+  <div class="uuif-card-header">
+    <div style="display:flex;align-items:center;gap:var(--uuif-sp-3)">
+      <div class="api-card-icon">&#x1F4E1;</div>
+      <span class="uuif-card-title">WNM API</span>
+    </div>
+    <span class="uuif-chip uuif-chip-warning">Beta</span>
+  </div>
+  <div class="uuif-card-body">
+    <div class="api-card-desc">Wireless Network Manager &mdash; access point provisioning, SSID management, RF analytics, and multi-site wireless policy automation.</div>
+    <div class="api-card-meta"><div class="api-meta-item"><div class="dot dot-yellow"></div>Coming Q3 2026</div><div class="api-meta-item"><div class="dot "></div>Early access</div></div>
+  </div>
+</div>
+<div class="uuif-card">
+  <div class="uuif-card-header">
+    <div style="display:flex;align-items:center;gap:var(--uuif-sp-3)">
+      <div class="api-card-icon">&#x1F3E2;</div>
+      <span class="uuif-card-title">SMA 1000 API</span>
+    </div>
+    <span class="uuif-chip uuif-chip-success">GA</span>
+  </div>
+  <div class="uuif-card-body">
+    <div class="api-card-desc">Secure Mobile Access &mdash; session management, user provisioning, and policy configuration without device-local access.</div>
+    <div class="api-card-meta"><div class="api-meta-item"><div class="dot dot-green"></div>OAS 3.1</div><div class="api-meta-item"><div class="dot "></div>v12.4+</div></div>
+  </div>
+</div>
+<div class="uuif-card">
+  <div class="uuif-card-header">
+    <div style="display:flex;align-items:center;gap:var(--uuif-sp-3)">
+      <div class="api-card-icon">&#x1F4E7;</div>
+      <span class="uuif-card-title">Email Security API</span>
+    </div>
+    <span class="uuif-chip uuif-chip-success">GA</span>
+  </div>
+  <div class="uuif-card-body">
+    <div class="api-card-desc">Email threat protection &mdash; manage allow/block lists, quarantine, anti-spam policies, and threat analytics at scale.</div>
+    <div class="api-card-meta"><div class="api-meta-item"><div class="dot dot-green"></div>OAS 3.1</div><div class="api-meta-item"><div class="dot "></div>Hosted + on-prem</div></div>
+  </div>
+</div>
+<div class="uuif-card">
+  <div class="uuif-card-header">
+    <div style="display:flex;align-items:center;gap:var(--uuif-sp-3)">
+      <div class="api-card-icon">&#x2699;</div>
+      <span class="uuif-card-title">CMC API</span>
+    </div>
+    <span class="uuif-chip uuif-chip-orange">Preview</span>
+  </div>
+  <div class="uuif-card-body">
+    <div class="api-card-desc">Capture Security Center &mdash; multi-product visibility, analytics aggregation, and cross-platform policy orchestration.</div>
+    <div class="api-card-meta"><div class="api-meta-item"><div class="dot dot-orange"></div>Developer preview</div><div class="api-meta-item"><div class="dot "></div>OAS 3.1</div></div>
+  </div>
+</div></div>
+</section>
+<div class="section-divider"></div>
+<section id="start">
+  <div class="section-head anim d1">
+    <div><div class="section-eyebrow">Quick Start</div><div class="section-title">From zero to first API call</div></div>
+    <div style="display:flex;gap:8px">
+      <div class="uuif-filter-chip active">MSP Admin</div>
+      <div class="uuif-filter-chip">Enterprise IT</div>
+      <div class="uuif-filter-chip">SIEM / PSA Integrator</div>
+    </div>
+  </div>
+  <div class="gs-wrap anim d2">
+    <div class="gs-tabs"><div class="gs-tab active">MSP Admin</div><div class="gs-tab">Enterprise IT</div><div class="gs-tab">SIEM / PSA Integrator</div></div>
+    <div class="gs-body">
+      <div class="gs-steps">
+        <div class="gs-step"><div class="gs-step-num done">&#x2713;</div><div><div class="gs-step-title">Sign in to Unified Management</div><div class="gs-step-desc">Go to <strong style="color:var(--uuif-brand-orange)">platform.sonicwall.com</strong> &mdash; your single entry point for NSM, CSE, CC, WNM, and all sub-apps.</div></div></div>
+        <div class="gs-step"><div class="gs-step-num">2</div><div><div class="gs-step-title">Generate an API Key</div><div class="gs-step-desc">Navigate to <strong>Settings &rarr; Developer &rarr; API Keys</strong>. Select product scope, set token lifetime, copy your key. No support ticket needed.</div><a href="#" class="gs-step-link">Open API Key settings &rarr;</a></div></div>
+        <div class="gs-step"><div class="gs-step-num">3</div><div><div class="gs-step-title">Make your first request</div><div class="gs-step-desc">Swap in your API key, run the sample on the right, and get a response in under 60 seconds.</div></div></div>
+        <div class="gs-step"><div class="gs-step-num">4</div><div><div class="gs-step-title">Explore the full reference</div><div class="gs-step-desc">Every endpoint documented with parameters, response schemas, and runnable examples.</div><a href="#reference" class="gs-step-link">Jump to NSM reference &rarr;</a></div></div>
+      </div>
+      <div class="gs-code-panel">
+        <div class="gs-code-label">Sample &mdash; List NSM Devices</div>
+        <div class="uuif-code-block"><span class="c-kw">curl</span> <span class="c-dim">-X GET \</span>
+  <span class="c-str">https://api.sonicwall.com/nsm/v1/devices</span> <span class="c-dim">\</span>
+  <span class="c-dim">-H</span> <span class="c-str">"Authorization: Bearer YOUR_KEY"</span>
+
+<span class="c-comment"># 200 OK</span>
+<span class="c-dim">{</span>
+  <span class="c-str">"devices"</span><span class="c-dim">: [{</span>
+    <span class="c-str">"id"</span><span class="c-dim">:</span>     <span class="c-str">"fw-2cb8eddb39a0"</span><span class="c-dim">,</span>
+    <span class="c-str">"name"</span><span class="c-dim">:</span>   <span class="c-str">"Fw_9073"</span><span class="c-dim">,</span>
+    <span class="c-str">"status"</span><span class="c-dim">:</span> <span class="c-str">"online"</span>
+  <span class="c-dim">}],</span>
+  <span class="c-str">"total"</span><span class="c-dim">:</span> <span class="c-num">103</span>
+<span class="c-dim">}</span></div>
+        <div style="margin-top:var(--uuif-sp-5)"><div class="gs-code-label" style="margin-bottom:6px">Response time</div><div style="font-family:'Nunito Sans',sans-serif;font-size:13px;font-weight:700;color:var(--uuif-brand-green)">&#x2713; 187ms</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+<div class="section-divider"></div>
+<section id="reference">
+  <div class="section-head anim d1">
+    <div><div class="section-eyebrow">Interactive Reference</div><div class="section-title">NSM API &mdash; searchable, navigable, code-ready</div></div>
+    <a href="#" class="section-link">Full NSM reference &rarr;</a>
+  </div>
+  <div class="ref-wrap anim d2">
+    <div class="ref-sidebar">
+      <div class="ref-sidebar-header"><div class="uuif-search-input"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg> Filter endpoints&hellip;</div></div>
+      <div class="ref-group"><div class="ref-group-title">Devices</div>
+        <div class="ref-item active"><span class="ref-method m-get">GET</span><span class="ref-label">/devices</span></div>
+        <div class="ref-item"><span class="ref-method m-get">GET</span><span class="ref-label">/devices/{id}</span></div>
+        <div class="ref-item"><span class="ref-method m-post">POST</span><span class="ref-label">/devices</span></div>
+        <div class="ref-item"><span class="ref-method m-del">DEL</span><span class="ref-label">/devices/{id}</span></div>
+      </div>
+      <div class="ref-group"><div class="ref-group-title">Policies</div>
+        <div class="ref-item"><span class="ref-method m-get">GET</span><span class="ref-label">/policies</span></div>
+        <div class="ref-item"><span class="ref-method m-post">POST</span><span class="ref-label">/policies/commit</span></div>
+      </div>
+      <div class="ref-group"><div class="ref-group-title">Tenants</div>
+        <div class="ref-item"><span class="ref-method m-get">GET</span><span class="ref-label">/tenants</span></div>
+        <div class="ref-item"><span class="ref-method m-post">POST</span><span class="ref-label">/tenants</span></div>
+      </div>
+      <div class="ref-group"><div class="ref-group-title">Alerts</div>
+        <div class="ref-item"><span class="ref-method m-get">GET</span><span class="ref-label">/alerts</span></div>
+        <div class="ref-item"><span class="ref-method m-post">POST</span><span class="ref-label">/alerts/ack</span></div>
+      </div>
+    </div>
+    <div class="ref-main">
+      <div class="ref-ep-header">
+        <span class="ref-method m-get" style="font-size:12px;padding:4px 10px">GET</span>
+        <span class="ref-ep-path">/nsm/v1/<em>devices</em></span>
+        <span class="uuif-chip uuif-chip-success" style="margin-left:auto">Stable</span>
+      </div>
+      <div class="ref-desc">Returns a paginated list of all firewall devices registered to the authenticated tenant. Supports filtering by status, model family, and firmware version.</div>
+      <div class="ref-label-sm">Query Parameters</div>
+      <table class="uuif-table">
+        <thead><tr><th>Parameter</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td class="p-name">tenant_id</td><td class="p-type">string</td><td class="p-opt">Optional</td><td class="p-desc">Filter to a specific tenant. Omit to return devices across all tenants in the API key scope.</td></tr>
+          <tr><td class="p-name">status</td><td class="p-type">enum</td><td class="p-opt">Optional</td><td class="p-desc">Filter by: <code>online</code>, <code>offline</code>, <code>degraded</code>. Defaults to all statuses.</td></tr>
+          <tr><td class="p-name">limit</td><td class="p-type">integer</td><td class="p-opt">Optional</td><td class="p-desc">Results per page. Min: 1, Max: 200. Default: 50.</td></tr>
+          <tr><td class="p-name">page_token</td><td class="p-type">string</td><td class="p-opt">Optional</td><td class="p-desc">Cursor from previous response. Use <code>next_page_token</code> from prior call.</td></tr>
+        </tbody>
+      </table>
+      <div class="ref-label-sm">Code Sample</div>
+      <div class="snippet-tabs"><div class="snippet-tab active">cURL</div><div class="snippet-tab">Python</div><div class="snippet-tab">JavaScript</div><div class="snippet-tab">PowerShell</div><div class="snippet-tab">Go</div></div>
+      <div class="snippet-code"><span class="c-kw">curl</span> <span class="c-dim">-G</span> <span class="c-str">https://api.sonicwall.com/nsm/v1/devices</span> <span class="c-dim">\</span>
+  <span class="c-dim">-H</span> <span class="c-str">"Authorization: Bearer {YOUR_API_KEY}"</span> <span class="c-dim">\</span>
+  <span class="c-dim">-d</span> <span class="c-str">"status=online"</span></div>
+    </div>
+  </div>
+</section>
+<div class="section-divider"></div>
+<section id="changelog">
+  <div class="section-head anim d1">
+    <div><div class="section-eyebrow">Auto-Generated Changelog</div><div class="section-title">What&rsquo;s New &mdash; Last 90 Days</div></div>
+    <a href="#" class="section-link">Full changelog &rarr;</a>
+  </div>
+  <div class="cl-list anim d2"><div class="cl-entry">
+  <div class="cl-meta"><div class="cl-date">Apr 8, 2026</div><div class="cl-product">NSM</div><span class="uuif-chip uuif-chip-success">New Endpoints</span></div>
+  <div><div class="cl-title">Bulk device tag assignment &mdash; 3 new endpoints</div><div class="cl-desc">Added <code>POST /devices/tags/bulk</code>, <code>DELETE /devices/tags/bulk</code>, and <code>GET /devices/tags</code>. Supports tagging up to 500 devices in a single request.</div></div>
+</div><div class="cl-entry breaking">
+  <div class="cl-meta"><div class="cl-date">Mar 15, 2026</div><div class="cl-product">SonicOS</div><span class="uuif-chip uuif-chip-error">Breaking Change</span></div>
+  <div><div class="cl-title">Address object commit behavior changed &mdash; migration required</div><div class="cl-desc"><code>POST /address-objects</code> now requires <code>&quot;commit&quot;: true</code> to persist changes. Requests without this field return <code>200 OK</code> but changes are not saved. <strong style='color:var(--uuif-brand-red)'>Update your integration before April 30, 2026.</strong></div></div>
+</div><div class="cl-entry">
+  <div class="cl-meta"><div class="cl-date">Mar 1, 2026</div><div class="cl-product">CSE</div><span class="uuif-chip uuif-chip-default">Updated</span></div>
+  <div><div class="cl-title">User object now includes isDeleted field on all responses</div><div class="cl-desc"><code>isDeleted</code> now consistently returned on all user objects in <code>GET /api/v2/users</code>. Previously omitted for active users. Passive addition &mdash; no behavioral change.</div></div>
+</div><div class="cl-entry">
+  <div class="cl-meta"><div class="cl-date">Feb 14, 2026</div><div class="cl-product">CSE</div><span class="uuif-chip uuif-chip-default">Deprecated</span></div>
+  <div><div class="cl-title">GET /api/v1/users &mdash; sunset June 1, 2026</div><div class="cl-desc">Migrate to <code>GET /api/v2/users</code> which includes full pagination, additional filters, and the <code>isDeleted</code> field. v2 is available today.</div></div>
+</div><div class="cl-entry">
+  <div class="cl-meta"><div class="cl-date">Jan 22, 2026</div><div class="cl-product">Capture Client</div><span class="uuif-chip uuif-chip-success">New Endpoints</span></div>
+  <div><div class="cl-title">CCMDR EU &mdash; now at full API parity with NOAM</div><div class="cl-desc">All 27 API categories now available in the EU region. EU deployments now use the same canonical spec as NOAM with region-specific routing at the gateway layer.</div></div>
+</div></div>
+</section>
+</div>
+<footer class="footer">
+  <div class="footer-inner">
+    <div>
+      <div class="footer-logo">SONIC<span>WALL</span><sup style="font-size:8px">&reg;</sup></div>
+      <div class="footer-desc">SonicWall Developer Hub &mdash; unified API access for partners, MSPs, and enterprise integrators.</div>
+      <div class="footer-status"><div class="status-dot"></div>All systems operational</div>
+    </div>
+    <div class="footer-col"><div class="footer-col-title">APIs</div><ul><li><a href="#">NSM API</a></li><li><a href="#">SonicOS API</a></li><li><a href="#">Cloud Secure Edge</a></li><li><a href="#">Capture Client</a></li><li><a href="#">MySonicWall API</a></li></ul></div>
+    <div class="footer-col"><div class="footer-col-title">Resources</div><ul><li><a href="#">Quick Start Guide</a></li><li><a href="#">Authentication</a></li><li><a href="#">Error Reference</a></li><li><a href="#">Changelog</a></li><li><a href="#">SDKs &amp; Tools</a></li></ul></div>
+    <div class="footer-col"><div class="footer-col-title">Support</div><ul><li><a href="#">API Status</a></li><li><a href="#">Community Forum</a></li><li><a href="#">Partner Portal</a></li><li><a href="#">Contact Sales</a></li></ul></div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-copy">&copy; 2026 SonicWall Inc. All rights reserved.</div>
+    <div class="footer-links"><a href="#">Privacy Policy</a><a href="#">Terms of Use</a></div>
+  </div>
+</footer></body></html>
