@@ -1,4 +1,4 @@
-# Unified Developer API Hub
+# Unified Developer API Hub (North Star Vision)
 
 ### ▶ [View the live prototype](https://snwl-wchen.github.io/API-hub/)
 
