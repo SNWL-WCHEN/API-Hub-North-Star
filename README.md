@@ -33,8 +33,3 @@ The measure of success for a developer portal is whether someone can accomplish 
 
 ---
 
-### Other work
-
-- [SAMI Enablement Demo](https://snwl-wchen.github.io/SAMI_Demo/) — north-star interface for an AI security assistant
-- [Claude Skills Library](https://snwl-wchen.github.io/Skills-Library/) — AI instruction library for product teams
-- [Dark Mode UUIF](https://snwl-wchen.github.io/UM-Dark-Mode/) — design system dark mode implementation
