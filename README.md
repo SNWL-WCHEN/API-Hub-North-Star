@@ -1,6 +1,6 @@
 # Unified Developer API Hub (North Star Vision)
 
-### ▶ [View the live prototype](https://snwl-wchen.github.io/API-hub/)
+### ▶ [View the live prototype](https://snwl-wchen.github.io/API-Hub-North-Star/)
 
 A working prototype for a unified developer portal, designed to consolidate fragmented API documentation across multiple product lines into a single reference partners can actually navigate.
 
